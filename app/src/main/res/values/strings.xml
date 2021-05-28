@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">randomizer</string>
+    <string name="invalid_datatype">Invalid data type</string>
+    <string name="min_value_must_be_positive">Minimal value must be positive</string>
+    <string name="min_value_must_be_lower_than_max">Minimal value must be lower then maximal</string>
 </resources>
