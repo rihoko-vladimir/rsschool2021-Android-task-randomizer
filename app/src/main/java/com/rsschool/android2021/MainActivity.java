@@ -13,6 +13,8 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
 
     private static final String SECOND_FRAGMENT_TAG = "second";
     private static final String FIRST_FRAGMENT_TAG = "first";
+    private SecondFragment secondFragment;
+    private FirstFragment firstFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,17 +24,17 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
     }
 
     private void openFirstFragment(int previousNumber) {
-        final Fragment firstFragment = FirstFragment.newInstance(previousNumber);
+        firstFragment = FirstFragment.newInstance(previousNumber);
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, firstFragment,FIRST_FRAGMENT_TAG).addToBackStack(FIRST_FRAGMENT_TAG);
+        transaction.replace(R.id.container, firstFragment,FIRST_FRAGMENT_TAG);
         // TODO: invoke function which apply changes of the transaction
         transaction.commit();
     }
 
     private void openSecondFragment(int min, int max) {
         // TODO: implement it
-        Fragment fragment = SecondFragment.newInstance(min, max);
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment,SECOND_FRAGMENT_TAG).addToBackStack(SECOND_FRAGMENT_TAG).commit();
+        secondFragment = SecondFragment.newInstance(min, max);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, secondFragment,SECOND_FRAGMENT_TAG).commit();
     }
 
     @Override
@@ -42,13 +44,11 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
 
     @Override
     public void onBackPressed() {
-        SecondFragment fragment = (SecondFragment) getSupportFragmentManager().findFragmentByTag(SECOND_FRAGMENT_TAG);
-        if (fragment==null){
+        if (secondFragment==null || !(secondFragment.getLifecycle().getCurrentState() == Lifecycle.State.RESUMED)){
             super.onBackPressed();
-            return;
-        }
-        if (fragment.getLifecycle().getCurrentState()== Lifecycle.State.RESUMED){
-            openFirstFragment(fragment.getRandomResult());
+        }else {
+            onSecondFragmentBackPressed(secondFragment.getRandomResult());
+            secondFragment=null;
         }
     }
 
